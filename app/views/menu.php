@@ -5,10 +5,17 @@
           <h5 class="fw-bold mt-2">Koomodo</h5>
         </div>
         <a href="main" class="active"><i class="bi bi-person-circle me-2"></i>DashBoard</a>
+        <?php if ($_SESSION['usuario']['tipo_usuario'] == 1) { ?>
         <a href="usuarios"><i class="bi bi-person-circle me-2"></i>Usuarios</a>
         <a href="stands"><i class="bi bi-building me-2"></i>Stands</a>
         <a href="evento"><i class="bi bi-calendar-event me-2"></i>Evento</a>
-        <a href="wallet"><i class="bi bi-calendar-event me-2"></i>Wallet</a>
+        <a href="wallet"><i class="bi bi-currency-dollar"></i>Wallet</a>
+        <?php } ?>
+        <?php if ($_SESSION['usuario']['tipo_usuario'] == 2) { ?>
+          <a href="mis_productos"><i class="bi bi-building me-2"></i>Mis Productos</a>
+        <?php } ?>
+        <hr class="text-secondary" />
+        <a href="kooomo_eventos"><i class="bi bi-balloon-heart"></i>Koomo-Eventos</a>
         <hr class="text-secondary" />
         <a href="logout"><i class="bi bi-box-arrow-right me-2"></i>Salir</a>
       </div>

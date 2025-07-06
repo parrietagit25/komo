@@ -49,7 +49,76 @@ if (!isset($_SESSION['usuario'])) {
       <!-- Contenido principal -->
       <div class="col-md-9 col-lg-10 content">
         <h3>Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario']['nombre_completo']); ?></h3>
-        <p class="text-white-50">Selecciona una opción del menú lateral para comenzar.</p>
+
+        <?php if ($_SESSION['usuario']['tipo_usuario'] == 1) { ?>
+
+          <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Total de Eventos</h5>
+              <p class="card-text">20</p>
+            </div>
+          </div>
+
+          <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Total de Stand</h5>
+              <p class="card-text">60</p>
+            </div>
+          </div>
+
+          <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Total de clientes</h5>
+              <p class="card-text">200</p>
+            </div>
+          </div>
+
+          <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Total de transacciones</h5>
+              <p class="card-text">1000</p>
+            </div>
+          </div>
+          
+        <?php } ?>
+        
+        <?php if ($_SESSION['usuario']['tipo_usuario'] == 2) { ?>
+
+          <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Saldo</h5>
+              <p class="card-text">100.000 $</p>
+            </div>
+          </div>
+
+          <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Pedidos realizados</h5>
+              <p class="card-text">5</p>
+            </div>
+          </div>
+          
+        <?php } ?>
+
+        <?php if ($_SESSION['usuario']['tipo_usuario'] == 3) { ?>
+
+          <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Saldo disponible</h5>
+              <p class="card-text">100.000 $</p>
+            </div>
+          </div>
+
+          <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Pedidos en preparacion</h5>
+              <p class="card-text">5</p>
+            </div>
+          </div>
+          
+        <?php } ?>
+
+
       </div>
     </div>
   </div>

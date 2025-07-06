@@ -2,21 +2,26 @@
 class Stand {
     private $conn;
     private $table = "stands";
+    private $table2 = "usuarios";
 
     public function __construct($db) {
         $this->conn = $db;
     }
 
-    public function obtenerTodos() {
-        $stmt = $this->conn->prepare("SELECT * FROM {$this->table} ORDER BY id DESC");
+    public function obtenerTodosStand() {
+        $stmt = $this->conn->prepare("SELECT s.id, s.nombre, s.descripcion, s.ubicacion, s.estado, u.nombre_completo 
+                                      FROM {$this->table} s INNER JOIN {$this->table2} u ON u.id = s.id_user ORDER BY id DESC");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function registrar($nombre, $ubicacion) {
-        $stmt = $this->conn->prepare("INSERT INTO {$this->table} (nombre, ubicacion, stat) VALUES (:nombre, :ubicacion, 1)");
+    public function registrar($nombre, $ubicacion, $descripcion, $stat, $id_user) {
+        $stmt = $this->conn->prepare("INSERT INTO {$this->table} (nombre, ubicacion, estado, descripcion, id_user) VALUES (:nombre, :ubicacion, :descripcion, :estado, :id_user)");
         $stmt->bindParam(':nombre', $nombre);
         $stmt->bindParam(':ubicacion', $ubicacion);
+        $stmt->bindParam(':descripcion', $descripcion);
+        $stmt->bindParam(':estado', $stat);
+        $stmt->bindParam(':id_user', $id_user);
         return $stmt->execute();
     }
 

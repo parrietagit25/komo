@@ -16,7 +16,7 @@ $user = $_SESSION['usuario'];
 </head>
 <body>
 <div class="container mt-5">
-    <h3>Bienvenido, <?php echo htmlspecialchars($user['nombre_completo']); ?></h3>
+    <h3>Bienvenido, <?php echo htmlspecialchars($user['nombre_completo']); ?> 33333</h3>
     <a href="/logout" class="btn btn-danger mt-3">Cerrar sesión</a>
 </div>
 </body>

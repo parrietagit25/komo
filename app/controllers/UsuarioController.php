@@ -8,14 +8,14 @@ $conn = $db->connect();
 $model = new Usuario($conn);
 
 // Registrar
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['usuario']) && !isset($_POST['id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_user']) && !isset($_POST['id'])) {
     $model->registrar($_POST);
     header("Location: usuarios");
     exit();
 }
 
 // Editar
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id']) && isset($_POST['edit_user'])) {
     $model->actualizar($_POST);
     header("Location: usuarios");
     exit();
@@ -28,4 +28,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id']) && isset($_POST
     exit();
 }
 
-$usuarios = $model->todos_usuarios();
+//$usuarios = $model->todos_usuarios();

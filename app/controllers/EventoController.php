@@ -8,22 +8,29 @@ $conn = $db->connect();
 $model = new Evento($conn);
 
 // Registrar evento
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nombre']) && !isset($_POST['id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_evento']) && !isset($_POST['id'])) {
     $model->registrar($_POST);
-    header("Location: eventos");
+    header("Location: evento");
     exit();
 }
 
 // Editar evento
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id']) && !isset($_POST['eliminar'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id']) && isset($_POST['editar_evento'])) {
     $model->actualizar($_POST);
-    header("Location: eventos");
+    header("Location: evento");
     exit();
 }
 
 // Eliminar evento
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id']) && isset($_POST['eliminar'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id']) && isset($_POST['eliminar_evento'])) {
     $model->eliminar($_POST['id']);
-    header("Location: eventos");
+    header("Location: evento");
+    exit();
+}
+
+// asignar estand
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['asig_stand']) && !isset($_POST['id'])) {
+    $model->asignar_stand($_POST);
+    header("Location: evento");
     exit();
 }

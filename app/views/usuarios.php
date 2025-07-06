@@ -103,27 +103,27 @@ $conn = $db->connect(); ?>
     <!-- Modal Registrar Usuario -->
     <div class="modal fade" id="modalRegistrar" tabindex="-1" aria-labelledby="modalRegistrarLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form method="post" action="UsuarioController.php" class="modal-content bg-dark text-white">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalRegistrarLabel">Registrar Usuario</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <input type="text" name="usuario" class="form-control mb-2" placeholder="Usuario" required>
-                <input type="text" name="nombre_completo" class="form-control mb-2" placeholder="Nombre completo" required>
-                <input type="email" name="email" class="form-control mb-2" placeholder="Correo electrónico" required>
-                <select name="tipo_usuario" class="form-control mb-2" required>
-                <option value="">Tipo de usuario</option>
-                <option value="1">Administrador</option>
-                <option value="2">Estándar</option>
-                <option value="3">Regular</option>
-                </select>
-                <input type="password" name="password" class="form-control mb-2" placeholder="Contraseña" required>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-success">Guardar</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            </div>
+            <form method="post" action="" class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalRegistrarLabel">Registrar Usuario</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="usuario" class="form-control mb-2" placeholder="Usuario" required>
+                    <input type="text" name="nombre_completo" class="form-control mb-2" placeholder="Nombre completo" required>
+                    <input type="email" name="email" class="form-control mb-2" placeholder="Correo electrónico" required>
+                    <select name="tipo_usuario" class="form-control mb-2" required>
+                    <option value="">Tipo de usuario</option>
+                    <option value="1">Administrador</option>
+                    <option value="2">Estándar</option>
+                    <option value="3">Regular</option>
+                    </select>
+                    <input type="password" name="password" class="form-control mb-2" placeholder="Contraseña" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" name="reg_user">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
             </form>
         </div>
     </div>
@@ -149,13 +149,12 @@ $conn = $db->connect(); ?>
                 </select>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-warning">Actualizar</button>
+                <button type="submit" class="btn btn-warning" name="edit_user">Actualizar</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
             </div>
             </form>
         </div>
     </div>
-    <?php endforeach; ?>
 
     <!-- Modal Eliminar Usuario -->
     <div class="modal fade" id="modalEliminar<?= $u['id'] ?>" tabindex="-1">
@@ -170,13 +169,14 @@ $conn = $db->connect(); ?>
                     <input type="hidden" name="id" value="<?= $u['id'] ?>">
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                    <button type="submit" class="btn btn-danger" name="eliminar_user">Eliminar</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
                 <input type="hidden" name="eliminar" value="1">
             </form>
         </div>
     </div>
+    <?php endforeach; ?>
 
 
 

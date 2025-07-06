@@ -17,6 +17,7 @@ class Usuario {
         if ($stmt->rowCount() > 0) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if (password_verify($password, $row['password'])) {
+
                 return $row;
             }
         }
@@ -25,15 +26,16 @@ class Usuario {
     }
 
     public function registrar($data) {
-        $query = "INSERT INTO usuarios (usuario, nombre_completo, email, tipo_usuario, password) 
-                VALUES (:usuario, :nombre_completo, :email, :tipo_usuario, :password)";
+        $query = "INSERT INTO usuarios (usuario, nombre_completo, email, tipo_usuario, password, stat) 
+                VALUES (:usuario, :nombre_completo, :email, :tipo_usuario, :password, :stat)";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
             ':usuario' => $data['usuario'],
             ':nombre_completo' => $data['nombre_completo'],
             ':email' => $data['email'],
             ':tipo_usuario' => $data['tipo_usuario'],
-            ':password' => password_hash($data['password'], PASSWORD_DEFAULT)
+            ':password' => password_hash($data['password'], PASSWORD_DEFAULT), 
+            ':stat'=>1
         ]);
         return true;
     }
@@ -61,6 +63,13 @@ class Usuario {
 
     public function todos_usuarios(){
         $query = "SELECT * FROM usuarios";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function todos_usuarios_stand(){
+        $query = "SELECT * FROM usuarios where tipo_usuario = 2";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -15,8 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $usuarioModel->validarUsuario($usuario, $password);
 
     if ($user) {
+
         $_SESSION['usuario'] = $user;
-        header("Location: main"); // redirección relativa
+        header("Location: main"); 
         exit();
     } else {
         header("Location: login?error=1");
