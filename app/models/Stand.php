@@ -16,7 +16,7 @@ class Stand {
     }
 
     public function registrar($nombre, $ubicacion, $descripcion, $stat, $id_user) {
-        $stmt = $this->conn->prepare("INSERT INTO {$this->table} (nombre, ubicacion, estado, descripcion, id_user) VALUES (:nombre, :ubicacion, :descripcion, :estado, :id_user)");
+        $stmt = $this->conn->prepare("INSERT INTO {$this->table} (nombre, ubicacion, descripcion, estado, id_user) VALUES (:nombre, :ubicacion, :descripcion, :estado, :id_user)");
         $stmt->bindParam(':nombre', $nombre);
         $stmt->bindParam(':ubicacion', $ubicacion);
         $stmt->bindParam(':descripcion', $descripcion);
