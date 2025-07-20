@@ -37,8 +37,24 @@ class Komodoeventos {
             $montos = $_POST['product_costo'] ?? [];
 
             if (!$id_user || !$id_stand || count($productos) === 0) {
+                $_SESSION['error'] = 'Datos incompletos para crear la orden.';
                 return false;
             }
+
+            // Verificar que al menos un producto tenga cantidad > 0
+            $tieneProductos = false;
+            foreach ($cantidades as $cantidad) {
+                if ($cantidad > 0) {
+                    $tieneProductos = true;
+                    break;
+                }
+            }
+
+            if (!$tieneProductos) {
+                $_SESSION['error'] = 'Debe seleccionar al menos un producto.';
+                return false;
+            }
+
             // Iniciar transacción
             $this->conn->beginTransaction();
 
@@ -74,12 +90,15 @@ class Komodoeventos {
 
             // Confirmar transacción
             $this->conn->commit();
+            
+            $_SESSION['success'] = '¡Orden creada exitosamente! Orden #' . $id_orden;
             return true;
 
         } catch (Exception $e) {
             // Si ocurre un error, revertir
             $this->conn->rollBack();
             error_log('Error al guardar la orden: ' . $e->getMessage());
+            $_SESSION['error'] = 'Error al crear la orden. Intente nuevamente.';
             return false;
         }
     }

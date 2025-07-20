@@ -15,6 +15,12 @@ $model->guardar_producto();
 
 $stands = $model->obtenerStand($_SESSION['usuario']['id']);
 
+// Función para generar código QR
+function generarQR($texto) {
+    $url = "https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=" . urlencode($texto);
+    return $url;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -32,6 +38,9 @@ $stands = $model->obtenerStand($_SESSION['usuario']['id']);
     .sidebar a   { color:#ccc; text-decoration:none; display:block; padding:12px 20px; border-radius:8px; }
     .sidebar a:hover,.sidebar a.active{ background-color:#28C76F; color:#fff; }
     .content     { padding:2rem; }
+    .qr-code     { width: 60px; height: 60px; border-radius: 8px; }
+    .qr-modal    { text-align: center; }
+    .qr-modal img { max-width: 200px; border-radius: 10px; }
   </style>
 </head>
 
@@ -57,6 +66,7 @@ $stands = $model->obtenerStand($_SESSION['usuario']['id']);
               <th>Ubicación</th>
               <th>Descripción</th>
               <th>Estado</th>
+              <th>QR</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -70,6 +80,12 @@ $stands = $model->obtenerStand($_SESSION['usuario']['id']);
               <td><?= htmlspecialchars($s['ubicacion']) ?></td>
               <td><?= htmlspecialchars($s['descripcion']) ?></td>
               <td><?= $s['estado'] ?></td>
+              <td class="text-center">
+                <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal" 
+                        data-bs-target="#modalQR<?= $s['id'] ?>">
+                  <i class="bi bi-qr-code"></i> Ver QR
+                </button>
+              </td>
               <td class="text-center">
                 <!-- Botón para registrar producto -->
                 <button class="btn btn-success btn-sm me-1" data-bs-toggle="modal"
@@ -94,6 +110,29 @@ $stands = $model->obtenerStand($_SESSION['usuario']['id']);
 
 <!-- ░░░░░░░░░░░░░░░  MODALES  ░░░░░░░░░░░░░░░ -->
 <?php foreach ($stands as $s): ?>
+  <!-- Modal QR -->
+  <div class="modal fade" id="modalQR<?= $s['id'] ?>" tabindex="-1"
+       aria-labelledby="labelQR<?= $s['id'] ?>" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-white">
+        <div class="modal-header">
+          <h5 class="modal-title" id="labelQR<?= $s['id'] ?>">
+            Código QR - Stand: <?= htmlspecialchars($s['nombre']) ?>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body qr-modal">
+          <p class="mb-3">ID del Stand: <strong><?= $s['id'] ?></strong></p>
+          <img src="<?= generarQR('STAND_ID:' . $s['id']) ?>" alt="QR Code" class="img-fluid">
+          <p class="mt-3 text-muted">Este código QR contiene el ID del stand para identificación rápida</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Eliminar -->
   <div class="modal fade" id="modalEliminar<?= $s['id'] ?>" tabindex="-1"
        aria-labelledby="labelEliminar<?= $s['id'] ?>" aria-hidden="true">

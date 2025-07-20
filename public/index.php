@@ -49,8 +49,23 @@ switch ($path) {
     case 'mis_productos':
         require_once __DIR__ . '/../app/views/mis_productos_stand.php';
         break;
+    case 'ordenes_directas':
+        require_once __DIR__ . '/../app/views/ordenes_directas.php';
+        break;
+    case 'asignar_orden':
+        require_once __DIR__ . '/../app/views/asignar_orden.php';
+        break;
     case 'registro_producto':
         require_once __DIR__ . '/../app/controllers/MisproductosController.php';
+        break;
+    case 'escanear_qr':
+        require_once __DIR__ . '/../app/views/escanear_qr.php';
+        break;
+    case 'mi_qr':
+        require_once __DIR__ . '/../app/views/mi_qr.php';
+        break;
+    case 'productos_stand':
+        require_once __DIR__ . '/../app/views/productos_stand.php';
         break;
     case 'kooomo_eventos':
         require_once __DIR__ . '/../app/views/koomo_eventos.php';

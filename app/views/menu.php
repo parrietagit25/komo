@@ -13,6 +13,11 @@
         <?php } ?>
         <?php if ($_SESSION['usuario']['tipo_usuario'] == 2) { ?>
           <a href="mis_productos"><i class="bi bi-building me-2"></i>Mis Productos</a>
+          <a href="ordenes_directas"><i class="bi bi-cart-plus me-2"></i>Órdenes Directas</a>
+        <?php } ?>
+        <?php if ($_SESSION['usuario']['tipo_usuario'] == 3) { ?>
+          <a href="escanear_qr"><i class="bi bi-qr-code me-2"></i>Escanear QR</a>
+          <a href="mi_qr"><i class="bi bi-person-badge me-2"></i>Mi QR</a>
         <?php } ?>
         <hr class="text-secondary" />
         <a href="kooomo_eventos"><i class="bi bi-balloon-heart"></i>Koomo-Eventos</a>

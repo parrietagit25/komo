@@ -15,6 +15,24 @@ class Stand {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function obtenerStandsPorUsuario($id_user) {
+        $stmt = $this->conn->prepare("SELECT s.id, s.nombre, s.descripcion, s.ubicacion, s.estado, u.nombre_completo as encargado 
+                                      FROM {$this->table} s INNER JOIN {$this->table2} u ON u.id = s.id_user 
+                                      WHERE s.id_user = :id_user");
+        $stmt->bindParam(':id_user', $id_user);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerStandPorId($id) {
+        $stmt = $this->conn->prepare("SELECT s.id, s.nombre, s.descripcion, s.ubicacion, s.estado, u.nombre_completo as encargado 
+                                      FROM {$this->table} s INNER JOIN {$this->table2} u ON u.id = s.id_user 
+                                      WHERE s.id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function registrar($nombre, $ubicacion, $descripcion, $stat, $id_user) {
         $stmt = $this->conn->prepare("INSERT INTO {$this->table} (nombre, ubicacion, descripcion, estado, id_user) VALUES (:nombre, :ubicacion, :descripcion, :estado, :id_user)");
         $stmt->bindParam(':nombre', $nombre);
