@@ -129,4 +129,40 @@ class Komodoeventos {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function obtenerTodasLasOrdenes() {
+        $stmt = $this->conn->prepare("SELECT o.*, u.nombre_completo as nombre_cliente 
+                                     FROM orden o 
+                                     LEFT JOIN usuarios u ON o.id_user = u.id 
+                                     ORDER BY o.fecha_log DESC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function contarOrdenesPorCliente($id_cliente) {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM orden WHERE id_user = :id_cliente");
+        $stmt->bindParam(':id_cliente', $id_cliente);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'] ?? 0;
+    }
+
+    public function contarOrdenesEnPreparacion($id_cliente) {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM orden 
+                                     WHERE id_user = :id_cliente AND stat = 1");
+        $stmt->bindParam(':id_cliente', $id_cliente);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'] ?? 0;
+    }
+
+    public function obtenerUltimaCompra($id_cliente) {
+        $stmt = $this->conn->prepare("SELECT o.*, 
+                                     (SELECT SUM(od.cantidad * od.monto) FROM orden_detalle od WHERE od.id_orden = o.id) as total
+                                     FROM orden o 
+                                     WHERE o.id_user = :id_cliente 
+                                     ORDER BY o.fecha_log DESC LIMIT 1");
+        $stmt->bindParam(':id_cliente', $id_cliente);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

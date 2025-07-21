@@ -36,14 +36,41 @@ $productos = $productosModel->obtenerProductosPorStand($stand_id);
 
 // Procesar creación de orden
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_orden'])) {
-    $resultado = $ordenModel->guardar_orden();
-    if ($resultado) {
-        // Redirigir a kooomo_eventos con mensaje de éxito
-        header("Location: kooomo_eventos");
-        exit();
+    // Verificar saldo del cliente antes de procesar la orden
+    require_once 'app/models/Wallet.php';
+    $walletModel = new Wallet($conn);
+    $id_cliente = $_SESSION['user_id'];
+    $saldo_cliente = $walletModel->obtenerSaldoUsuario($id_cliente);
+    
+    // Calcular total de la orden
+    $total_orden = 0;
+    if (isset($_POST['cantidad_pro']) && isset($_POST['product_costo'])) {
+        foreach ($_POST['cantidad_pro'] as $index => $cantidad) {
+            if ($cantidad > 0) {
+                $costo = $_POST['product_costo'][$index];
+                $total_orden += $cantidad * $costo;
+            }
+        }
+    }
+    
+    // Verificar si tiene saldo suficiente
+    if ($saldo_cliente < $total_orden) {
+        $_SESSION['error'] = "Saldo insuficiente. Tu saldo actual es $" . number_format($saldo_cliente, 2) . " y necesitas $" . number_format($total_orden, 2);
     } else {
-        // Mantener en la misma página si hay error
-        // Los mensajes de error se mostrarán automáticamente
+        // Procesar la orden
+        $resultado = $ordenModel->guardar_orden();
+        if ($resultado) {
+            // Procesar el pago con wallet
+            if ($walletModel->procesarCompra($id_cliente, $stand_id, $total_orden, $resultado)) {
+                $_SESSION['success'] = "¡Orden creada exitosamente! Se descontó $" . number_format($total_orden, 2) . " de tu wallet.";
+                header("Location: kooomo_eventos");
+                exit();
+            } else {
+                $_SESSION['error'] = "Error al procesar el pago. La orden no se completó.";
+            }
+        } else {
+            $_SESSION['error'] = "Error al crear la orden.";
+        }
     }
 }
 ?>

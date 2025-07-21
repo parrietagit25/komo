@@ -15,13 +15,20 @@ class Stand {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function obtenerStandsPorUsuario($id_user) {
+    public function obtenerStandsPorUsuario($id_usuario) {
         $stmt = $this->conn->prepare("SELECT s.id, s.nombre, s.descripcion, s.ubicacion, s.estado, u.nombre_completo as encargado 
-                                      FROM {$this->table} s INNER JOIN {$this->table2} u ON u.id = s.id_user 
-                                      WHERE s.id_user = :id_user");
-        $stmt->bindParam(':id_user', $id_user);
+                                     FROM {$this->table} s INNER JOIN {$this->table2} u ON u.id = s.id_user 
+                                     WHERE s.id_user = :id_usuario");
+        $stmt->bindParam(':id_usuario', $id_usuario);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function contarStands() {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM {$this->table}");
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'] ?? 0;
     }
 
     public function obtenerStandPorId($id) {

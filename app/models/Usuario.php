@@ -75,5 +75,17 @@ class Usuario {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function obtenerTodos() {
+        $stmt = $this->conn->prepare("SELECT * FROM {$this->table} ORDER BY nombre_completo");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
+    public function contarUsuariosPorTipo($tipo_usuario) {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM {$this->table} WHERE tipo_usuario = :tipo_usuario");
+        $stmt->bindParam(':tipo_usuario', $tipo_usuario);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'] ?? 0;
+    }
 }

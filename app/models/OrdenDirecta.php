@@ -102,4 +102,21 @@ class OrdenDirecta {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['nombre_completo'] ?? 'Cliente no encontrado';
     }
+
+    public function contarOrdenesPorStand($id_stand) {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM {$this->table} WHERE id_stand = :id_stand");
+        $stmt->bindParam(':id_stand', $id_stand);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'] ?? 0;
+    }
+
+    public function contarOrdenesHoyPorStand($id_stand) {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM {$this->table} 
+                                     WHERE id_stand = :id_stand AND DATE(fecha_log) = CURDATE()");
+        $stmt->bindParam(':id_stand', $id_stand);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'] ?? 0;
+    }
 } 

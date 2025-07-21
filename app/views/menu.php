@@ -18,6 +18,7 @@
         <?php if ($_SESSION['usuario']['tipo_usuario'] == 3) { ?>
           <a href="escanear_qr"><i class="bi bi-qr-code me-2"></i>Escanear QR</a>
           <a href="mi_qr"><i class="bi bi-person-badge me-2"></i>Mi QR</a>
+          <a href="mi_wallet"><i class="bi bi-wallet2 me-2"></i>Mi Wallet</a>
         <?php } ?>
         <hr class="text-secondary" />
         <a href="kooomo_eventos"><i class="bi bi-balloon-heart"></i>Koomo-Eventos</a>

@@ -71,4 +71,17 @@ class Evento {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function obtenerTodos() {
+        $stmt = $this->conn->prepare("SELECT * FROM {$this->table} ORDER BY fecha_log DESC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function contarEventos() {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM {$this->table}");
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'] ?? 0;
+    }
 }
