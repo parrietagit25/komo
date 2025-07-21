@@ -170,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['wallet_cargar'])) {
                                 <div class="row align-items-center">
                                     <div class="col-md-3">
                                         <h6 class="mb-1"><?= htmlspecialchars($transaccion['nombre_usuario']) ?></h6>
-                                        <small class="text-muted">ID: <?= $transaccion['id_user'] ?></small>
+                                        <small class="text-badge">ID: <?= $transaccion['id_user'] ?></small>
                                     </div>
                                     <div class="col-md-2">
                                         <span class="tipo-badge tipo-<?= $transaccion['tipo'] ?>">
@@ -183,12 +183,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['wallet_cargar'])) {
                                         </strong>
                                     </div>
                                     <div class="col-md-3">
-                                        <small class="text-muted">
+                                        <small class="text-badge">
                                             <?= date('d/m/Y H:i', strtotime($transaccion['fecha_log'])) ?>
                                         </small>
                                     </div>
                                     <div class="col-md-2">
-                                        <small class="text-muted">
+                                        <small class="text-badge">
                                             <?= htmlspecialchars($transaccion['descripcion']) ?>
                                         </small>
                                     </div>

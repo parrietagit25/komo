@@ -1,0 +1,43 @@
+GUÍA DE USO DEL SISTEMA KOOMODO
+===============================
+
+1. USUARIO CLIENTE
+------------------
+- Puede ver y comprar productos de los stands.
+- Para comprar:
+  1. Selecciona un stand y elige productos.
+  2. Indica la cantidad y registra la orden.
+  3. El sistema verifica tu saldo en la wallet.
+  4. Si tienes saldo suficiente, se descuenta el monto y se registra la transacción en tu wallet.
+  5. Puedes ver tu saldo y el historial de transacciones en la sección "Mi Wallet".
+- Puedes mostrar tu QR personal para identificarte en stands o para asignar órdenes directas.
+
+2. USUARIO STAND
+----------------
+- Puede ver sus stands y los productos asociados.
+- Puede registrar nuevos productos para su stand.
+- Puede ver las órdenes recibidas y su detalle.
+- Recibe saldo en su wallet cuando un cliente realiza una compra en su stand.
+- Puede ver el saldo y el historial de transacciones de su stand.
+
+3. USUARIO ADMIN
+----------------
+- Puede ver y gestionar todos los usuarios, stands y eventos.
+- Puede cargar saldo a cualquier usuario desde la sección de administración de wallet.
+- Puede ver el historial completo de transacciones de todos los usuarios y stands.
+- Puede consultar estadísticas generales del sistema (ventas, ingresos, etc.).
+
+FUNCIONAMIENTO DE LA WALLET Y TRANSACCIONES
+-------------------------------------------
+- Cada usuario (cliente o stand) tiene una wallet asociada.
+- Cuando un cliente realiza una compra:
+  - Se descuenta el monto de su wallet (transacción tipo "compra").
+  - Se acredita el monto al stand (transacción tipo "venta").
+- Cuando un admin carga saldo a un usuario, se registra una transacción tipo "carga".
+- Todas las transacciones quedan registradas y pueden ser consultadas en el historial de la wallet.
+
+RECOMENDACIONES
+---------------
+- Verifica siempre tu saldo antes de realizar una compra.
+- Si tienes problemas con una transacción, consulta el historial en tu wallet o contacta al admin.
+- Los stands deben mantener actualizados sus productos y precios. 

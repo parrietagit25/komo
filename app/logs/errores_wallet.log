@@ -1,0 +1,9 @@
+[2025-07-21 05:23:56] [procesarCompra] Iniciando compra: Cliente=7, Stand=6, Monto=32, Orden=1
+[2025-07-21 05:23:56] [procesarCompra] Saldo cliente: 2000.00
+[2025-07-21 05:23:56] [procesarCompra] Compra registrada en cash_wallet
+[2025-07-21 05:23:56] [procesarCompra] Venta registrada en cash_wallet
+[2025-07-21 05:23:56] Saldo actualizado para usuario 7
+[2025-07-21 05:23:56] [procesarCompra] Saldo descontado al cliente
+[2025-07-21 05:23:56] Nuevo saldo creado para usuario 6
+[2025-07-21 05:23:56] [procesarCompra] Saldo acreditado al stand
+[2025-07-21 05:23:56] [procesarCompra] Compra procesada exitosamente

@@ -2,13 +2,47 @@
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../models/koomoeventos.php';
+require_once __DIR__ . '/../models/Wallet.php';
 
 $db     = new Database();
 $conn   = $db->connect();
 $model  = new Komodoeventos($conn);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_orden'])) {
-    echo 'Pasando';
-$model->guardar_orden();
+    $walletModel = new Wallet($conn);
+    $id_cliente = $_SESSION['usuario']['id']; // Asegúrate de que este es el ID correcto
+    $stand_id = $_POST['id_stand'];
+    
+    // Calcular total de la orden
+    $total_orden = 0;
+    if (isset($_POST['cantidad_pro']) && isset($_POST['product_costo'])) {
+        foreach ($_POST['cantidad_pro'] as $index => $cantidad) {
+            if ($cantidad > 0) {
+                $costo = $_POST['product_costo'][$index];
+                $total_orden += $cantidad * $costo;
+            }
+        }
+    }
+
+    // Verificar saldo
+    $saldo_cliente = $walletModel->obtenerSaldoUsuario($id_cliente);
+    if ($saldo_cliente < $total_orden) {
+        $_SESSION['error'] = "Saldo insuficiente. Tu saldo actual es $" . number_format($saldo_cliente, 2) . " y necesitas $" . number_format($total_orden, 2);
+    } else {
+        // Guardar la orden
+        $resultado = $model->guardar_orden();
+        if ($resultado) {
+            // Registrar la transacción en la wallet
+            if ($walletModel->procesarCompra($id_cliente, $stand_id, $total_orden, $resultado)) {
+                $_SESSION['success'] = "¡Orden creada exitosamente! Se descontó $" . number_format($total_orden, 2) . " de tu wallet.";
+            } else {
+                $_SESSION['error'] = "Error al procesar el pago. La orden no se completó.";
+            }
+        } else {
+            $_SESSION['error'] = "Error al crear la orden.";
+        }
+    }
+    // Redirige o muestra mensaje según tu flujo
 }
 $stands = $model->obtenerStand();
 
@@ -208,7 +242,7 @@ $stands = $model->obtenerStand();
                 <td><?= $o['id'] ?></td>
                 <td>$<?= number_format($o['monto_total'], 2) ?></td>
                 <td><?= $o['cantidad_productos'] ?></td>
-                <td><?= date('d/m/Y H:i', strtotime($o['fecha_log'])) ?></td>
+                <td><?= $o['fecha_log'] ?></td>
                 <td>
                 <a class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalDetalleOrden<?= $o['id'] ?>">
                     <i class="bi bi-eye"></i>

@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_orden'])) {
     // Verificar saldo del cliente antes de procesar la orden
     require_once 'app/models/Wallet.php';
     $walletModel = new Wallet($conn);
-    $id_cliente = $_SESSION['user_id'];
+    $id_cliente = $_SESSION['usuario']['id'];
     $saldo_cliente = $walletModel->obtenerSaldoUsuario($id_cliente);
     
     // Calcular total de la orden

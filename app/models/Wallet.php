@@ -11,17 +11,17 @@ class Wallet {
     // Cargar dinero a un cliente (admin)
     public function cargarDinero($id_user, $monto, $descripcion = 'Carga manual') {
         try {
-            error_log("Iniciando carga de dinero: Usuario=$id_user, Monto=$monto");
+            $this->logCustom("Iniciando carga de dinero: Usuario=$id_user, Monto=$monto");
             
             // Verificar que el usuario existe
             $stmt = $this->conn->prepare("SELECT id FROM usuarios WHERE id = :id_user");
             $stmt->bindParam(':id_user', $id_user);
             $stmt->execute();
             if (!$stmt->fetch()) {
-                error_log("Error: Usuario $id_user no existe en la tabla usuarios");
+                $this->logCustom("Error: Usuario $id_user no existe en la tabla usuarios");
                 return false;
             }
-            error_log("Usuario $id_user verificado correctamente");
+            $this->logCustom("Usuario $id_user verificado correctamente");
             
             $this->conn->beginTransaction();
 
@@ -33,25 +33,25 @@ class Wallet {
             $stmt->bindParam(':descripcion', $descripcion);
             
             if (!$stmt->execute()) {
-                error_log("Error al insertar en cash_wallet: " . implode(", ", $stmt->errorInfo()));
+                $this->logCustom("Error al insertar en cash_wallet: " . implode(", ", $stmt->errorInfo()));
                 throw new Exception("Error al insertar transacción");
             }
-            error_log("Transacción registrada en cash_wallet");
+            $this->logCustom("Transacción registrada en cash_wallet");
 
             // Actualizar o crear saldo del usuario
             if (!$this->actualizarSaldoUsuario($id_user, $monto, 'suma')) {
-                error_log("Error al actualizar saldo del usuario");
+                $this->logCustom("Error al actualizar saldo del usuario");
                 throw new Exception("Error al actualizar saldo");
             }
 
-            error_log("Saldo actualizado en saldo_usuarios");
+            $this->logCustom("Saldo actualizado en saldo_usuarios");
 
             $this->conn->commit();
-            error_log("Transacción completada exitosamente");
+            $this->logCustom("Transacción completada exitosamente");
             return true;
         } catch (Exception $e) {
             $this->conn->rollBack();
-            error_log('Error al cargar dinero: ' . $e->getMessage());
+            $this->logCustom('Error al cargar dinero: ' . $e->getMessage());
             return false;
         }
     }
@@ -84,10 +84,10 @@ class Wallet {
                 $stmt->bindParam(':monto', $monto);
                 
                 if (!$stmt->execute()) {
-                    error_log("Error al actualizar saldo: " . implode(", ", $stmt->errorInfo()));
+                    $this->logCustom("Error al actualizar saldo: " . implode(", ", $stmt->errorInfo()));
                     return false;
                 }
-                error_log("Saldo actualizado para usuario $id_user");
+                $this->logCustom("Saldo actualizado para usuario $id_user");
             } else {
                 // Crear nuevo registro
                 $saldo_inicial = ($operacion == 'suma') ? $monto : 0;
@@ -97,15 +97,15 @@ class Wallet {
                 $stmt->bindParam(':saldo', $saldo_inicial);
                 
                 if (!$stmt->execute()) {
-                    error_log("Error al crear saldo: " . implode(", ", $stmt->errorInfo()));
+                    $this->logCustom("Error al crear saldo: " . implode(", ", $stmt->errorInfo()));
                     return false;
                 }
-                error_log("Nuevo saldo creado para usuario $id_user");
+                $this->logCustom("Nuevo saldo creado para usuario $id_user");
             }
             
             return true;
         } catch (Exception $e) {
-            error_log("Error en actualizarSaldoUsuario: " . $e->getMessage());
+            $this->logCustom("Error en actualizarSaldoUsuario: " . $e->getMessage());
             return false;
         }
     }
@@ -113,11 +113,14 @@ class Wallet {
     // Procesar compra (descontar de cliente, acreditar a stand)
     public function procesarCompra($id_cliente, $id_stand, $monto_total, $id_orden) {
         try {
+            $this->logCustom("[procesarCompra] Iniciando compra: Cliente=$id_cliente, Stand=$id_stand, Monto=$monto_total, Orden=$id_orden");
             $this->conn->beginTransaction();
 
             // Verificar saldo del cliente
             $saldo_cliente = $this->obtenerSaldoUsuario($id_cliente);
+            $this->logCustom("[procesarCompra] Saldo cliente: $saldo_cliente");
             if ($saldo_cliente < $monto_total) {
+                $this->logCustom("[procesarCompra] Saldo insuficiente");
                 throw new Exception('Saldo insuficiente');
             }
 
@@ -128,7 +131,11 @@ class Wallet {
             $stmt->bindParam(':monto', $monto_total);
             $stmt->bindParam(':id_orden', $id_orden);
             $stmt->bindParam(':id_stand', $id_stand);
-            $stmt->execute();
+            if (!$stmt->execute()) {
+                $this->logCustom("[procesarCompra] Error al insertar compra: " . implode(", ", $stmt->errorInfo()));
+                throw new Exception("Error al registrar compra");
+            }
+            $this->logCustom("[procesarCompra] Compra registrada en cash_wallet");
 
             // Acreditar al stand
             $stmt = $this->conn->prepare("INSERT INTO {$this->table} (id_user, monto, tipo, id_orden, id_stand, descripcion) 
@@ -137,17 +144,31 @@ class Wallet {
             $stmt->bindParam(':monto', $monto_total);
             $stmt->bindParam(':id_orden', $id_orden);
             $stmt->bindParam(':id_stand', $id_stand);
-            $stmt->execute();
+            if (!$stmt->execute()) {
+                $this->logCustom("[procesarCompra] Error al insertar venta: " . implode(", ", $stmt->errorInfo()));
+                throw new Exception("Error al registrar venta");
+            }
+            $this->logCustom("[procesarCompra] Venta registrada en cash_wallet");
 
             // Actualizar saldos
-            $this->actualizarSaldoUsuario($id_cliente, $monto_total, 'resta');
-            $this->actualizarSaldoUsuario($id_stand, $monto_total, 'suma');
+            if (!$this->actualizarSaldoUsuario($id_cliente, $monto_total, 'resta')) {
+                $this->logCustom("[procesarCompra] Error al descontar saldo del cliente");
+                throw new Exception("Error al descontar saldo del cliente");
+            }
+            $this->logCustom("[procesarCompra] Saldo descontado al cliente");
+
+            if (!$this->actualizarSaldoUsuario($id_stand, $monto_total, 'suma')) {
+                $this->logCustom("[procesarCompra] Error al acreditar saldo al stand");
+                throw new Exception("Error al acreditar saldo al stand");
+            }
+            $this->logCustom("[procesarCompra] Saldo acreditado al stand");
 
             $this->conn->commit();
+            $this->logCustom("[procesarCompra] Compra procesada exitosamente");
             return true;
         } catch (Exception $e) {
             $this->conn->rollBack();
-            error_log('Error al procesar compra: ' . $e->getMessage());
+            $this->logCustom('[procesarCompra] Error: ' . $e->getMessage());
             return false;
         }
     }
@@ -228,6 +249,12 @@ class Wallet {
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['total'] ?? 0;
+    }
+
+    private function logCustom($mensaje) {
+        $ruta = __DIR__ . '/../logs/errores_wallet.log'; // Ajusta la ruta si lo prefieres en otra carpeta
+        $fecha = date('Y-m-d H:i:s');
+        file_put_contents($ruta, "[$fecha] $mensaje\n", FILE_APPEND);
     }
 }
 ?>
